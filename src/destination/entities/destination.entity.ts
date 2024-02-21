@@ -1,17 +1,17 @@
 import { Unit } from "src/unit/entities/unit.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: 'state' })
-export class State {
+@Entity({ name: 'destination' })
+export class Destination {
     @PrimaryGeneratedColumn()
-    id_state: number;
+    id_destination: number;
 
     @Column({ unique: true })
-    name_state: string;
+    destination_code: string;
 
     @Column({ unique: true })
-    state_order: number;
+    destination_description: string;
 
-    @OneToMany(()  => Unit, (unit) => unit.state)
+    @OneToMany(()  => Unit, (unit) => unit.destination)
     unit: Unit;
 }

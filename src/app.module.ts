@@ -6,6 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { CompanyModule } from './company/company.module';
 import { StateModule } from './state/state.module';
+import { DestinationModule } from './destination/destination.module';
+import { ProductFamilyModule } from './product_family/product_family.module';
+import { UebModule } from './ueb/ueb.module';
+import { LineTypeModule } from './line_type/line_type.module';
+import { UnitModule } from './unit/unit.module';
+import { ProductModule } from './product/product.module';
+import { BatchModule } from './batch/batch.module';
 
 @Module({
   imports: [
@@ -26,6 +33,13 @@ import { StateModule } from './state/state.module';
     }),
     CompanyModule,
     StateModule,
+    DestinationModule,
+    ProductFamilyModule,
+    UebModule,
+    LineTypeModule,
+    UnitModule,
+    ProductModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
