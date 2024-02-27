@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
 import { UnitService } from './unit.service';
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
@@ -8,7 +8,7 @@ export class UnitController {
   constructor(private readonly unitService: UnitService) {}
 
   @Post()
-  create(@Body() createUnitDto: CreateUnitDto) {
+  create(@Body(new ValidationPipe()) createUnitDto: CreateUnitDto) {
     return this.unitService.create(createUnitDto);
   }
 
@@ -23,7 +23,7 @@ export class UnitController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUnitDto: UpdateUnitDto) {
+  update(@Param('id') id: string, @Body(new ValidationPipe()) updateUnitDto: UpdateUnitDto) {
     return this.unitService.update(+id, updateUnitDto);
   }
 

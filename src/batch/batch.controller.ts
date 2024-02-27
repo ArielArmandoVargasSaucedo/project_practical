@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
 import { BatchService } from './batch.service';
 import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
@@ -8,7 +8,7 @@ export class BatchController {
   constructor(private readonly batchService: BatchService) {}
 
   @Post()
-  create(@Body() createBatchDto: CreateBatchDto) {
+  create(@Body(new ValidationPipe()) createBatchDto: CreateBatchDto) {
     return this.batchService.create(createBatchDto);
   }
 
@@ -23,7 +23,7 @@ export class BatchController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBatchDto: UpdateBatchDto) {
+  update(@Param('id') id: string, @Body(new ValidationPipe()) updateBatchDto: UpdateBatchDto) {
     return this.batchService.update(+id, updateBatchDto);
   }
 

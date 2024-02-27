@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
 import { LineTypeService } from './line_type.service';
 import { CreateLineTypeDto } from './dto/create-line_type.dto';
 import { UpdateLineTypeDto } from './dto/update-line_type.dto';
@@ -8,7 +8,7 @@ export class LineTypeController {
   constructor(private readonly lineTypeService: LineTypeService) {}
 
   @Post()
-  create(@Body() createLineTypeDto: CreateLineTypeDto) {
+  create(@Body(new ValidationPipe()) createLineTypeDto: CreateLineTypeDto) {
     return this.lineTypeService.create(createLineTypeDto);
   }
 
@@ -23,7 +23,7 @@ export class LineTypeController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLineTypeDto: UpdateLineTypeDto) {
+  update(@Param('id') id: string, @Body(new ValidationPipe()) updateLineTypeDto: UpdateLineTypeDto) {
     return this.lineTypeService.update(+id, updateLineTypeDto);
   }
 

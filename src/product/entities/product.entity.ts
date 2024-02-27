@@ -8,7 +8,7 @@ export class Product {
     @PrimaryGeneratedColumn()
     id_product: number;
 
-    @Column()
+    @Column({ unique: true })
     name_product: string;
 
     @Column({ unique: true })

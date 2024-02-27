@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
 import { UebService } from './ueb.service';
 import { CreateUebDto } from './dto/create-ueb.dto';
 import { UpdateUebDto } from './dto/update-ueb.dto';
@@ -8,7 +8,7 @@ export class UebController {
   constructor(private readonly uebService: UebService) {}
 
   @Post()
-  create(@Body() createUebDto: CreateUebDto) {
+  create(@Body(new ValidationPipe()) createUebDto: CreateUebDto) {
     return this.uebService.create(createUebDto);
   }
 
@@ -23,7 +23,7 @@ export class UebController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUebDto: UpdateUebDto) {
+  update(@Param('id') id: string, @Body(new ValidationPipe()) updateUebDto: UpdateUebDto) {
     return this.uebService.update(+id, updateUebDto);
   }
 

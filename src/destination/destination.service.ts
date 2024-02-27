@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDestinationDto } from './dto/create-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -16,8 +16,17 @@ export class DestinationService {
 
   async create(createDestinationDto: CreateDestinationDto) {
     const destination = this.destinationRepository.create(createDestinationDto);
-
-    return await this.destinationRepository.save(destination);
+    try{
+      return await this.destinationRepository.save(destination);
+    } catch (error) {
+      if (error.code === '23505') {
+        if (error.detail.includes('destination_code'))
+          throw new HttpException('El código del destino ya existe. Por favor, introduzca un código diferente.', HttpStatus.BAD_REQUEST);
+        else if (error.detail.includes('destination_description'))
+          throw new HttpException('La descripción del destino ya existe. Por favor, introduzca una descripción diferente.', HttpStatus.BAD_REQUEST);
+      }
+      throw error;
+    } 
   }
 
   async findAll() {
@@ -25,24 +34,31 @@ export class DestinationService {
   }
 
   async findOne(id_destination: number) {
-    return await this.destinationRepository.findOne({
+    const destination = await this.destinationRepository.findOne({
       where: { id_destination }});
+    if (!destination)
+      throw new HttpException('El destino no existe. Por favor, introduzca un destino diferente.', HttpStatus.BAD_REQUEST);
+    return destination;
   }
 
   async update(id_destination: number, updateDestinationDto: UpdateDestinationDto) {
     const destination = await this.findOne(id_destination);
-    if(!destination){
-      throw new NotFoundException();
+    try{
+      Object.assign(destination, updateDestinationDto);
+      return await this.destinationRepository.save(destination);
+    } catch (error) {
+      if (error.code === '23505') {
+        if (error.detail.includes('destination_code'))
+          throw new HttpException('El código del destino ya existe. Por favor, introduzca un código diferente.', HttpStatus.BAD_REQUEST);
+        else if (error.detail.includes('destination_description'))
+          throw new HttpException('La descripción del estado ya existe. Por favor, introduzca una descripción diferente.', HttpStatus.BAD_REQUEST);
+      }
+      throw error;
     }
-    Object.assign(destination, updateDestinationDto);
-    return await this.destinationRepository.save(destination);
   }
 
   async remove(id_destination: number) {
     const destination = await this.findOne(id_destination);
-    if(!destination){
-      throw new NotFoundException();
-    }
     return await this.destinationRepository.remove(destination);
   }
 }
