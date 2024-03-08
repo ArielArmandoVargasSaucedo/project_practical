@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateDestinationDto } from './dto/create-destination.dto';
 import { UpdateDestinationDto } from './dto/update-destination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -59,6 +59,12 @@ export class DestinationService {
 
   async remove(id_destination: number) {
     const destination = await this.findOne(id_destination);
-    return await this.destinationRepository.remove(destination);
+    try{
+      return await this.destinationRepository.remove(destination);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('El destino seleccionado no puede ser eliminado porque es referenciado por una unidad.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }

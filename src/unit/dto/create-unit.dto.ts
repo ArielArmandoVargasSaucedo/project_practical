@@ -11,4 +11,8 @@ export class CreateUnitDto {
     @IsNumber()
     @Min(1, { message: 'El ID del destino debe ser un número a partir de uno' })
     id_destination: number;
+
+    @IsNumber()
+    @Min(1, { message: 'El ID del lote debe ser un número a partir de uno' })
+    id_batch: number;
 }

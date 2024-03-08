@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUnitDto } from './dto/create-unit.dto';
 import { UpdateUnitDto } from './dto/update-unit.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -22,13 +22,15 @@ export class UnitService {
           throw new HttpException('El estado referenciado no existe. Por favor, introduzca un estado que exista.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('id_destination'))
           throw new HttpException('El destino referenciado no existe. Por favor, introduzca un destino que exista.', HttpStatus.BAD_REQUEST);
+        else if (error.detail.includes('id_batch'))
+          throw new HttpException('El lote referenciado no existe. Por favor, introduzca un lote que exista.', HttpStatus.BAD_REQUEST);
       }
     }
   }
 
   async findAll() {
     return await this.unitRepository.find({
-      relations: ['state', 'destination']
+      relations: ['state', 'destination', 'batch']
     });
   }
 
@@ -51,6 +53,8 @@ export class UnitService {
           throw new HttpException('El estado referenciado no existe. Por favor, introduzca un estado que exista.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('id_destination'))
           throw new HttpException('El destino referenciado no existe. Por favor, introduzca un destino que exista.', HttpStatus.BAD_REQUEST);
+        else if (error.detail.includes('id_batch'))
+          throw new HttpException('El lote referenciado no existe. Por favor, introduzca un lote que exista.', HttpStatus.BAD_REQUEST);
       }
     }
   }

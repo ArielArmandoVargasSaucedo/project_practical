@@ -62,9 +62,9 @@ export class ProductService {
       }
       else if (error.code === '23503') {
         if (error.detail.includes('id_product_family'))
-          throw new HttpException('La familia producto referenciada no existe. Por favor, introduzca una familia producto que exista.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('La familia de producto referenciada no existe. Por favor, introduzca una familia de producto que exista.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('id_ueb'))
-          throw new HttpException('La ueb referenciada no existe. Por favor, introduzca una ueb que exista.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('La UEB referenciada no existe. Por favor, introduzca una UEB que exista.', HttpStatus.BAD_REQUEST);
       }
       throw error;
     }
@@ -72,6 +72,12 @@ export class ProductService {
 
   async remove(id_product: number) {
     const product = await this.findOne(id_product);
-    return await this.productRepository.remove(product);
+    try{
+      return await this.productRepository.remove(product);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('El producto seleccionado no puede ser eliminado porque es referenciado por un lote.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }

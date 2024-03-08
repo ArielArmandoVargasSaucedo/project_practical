@@ -11,8 +11,4 @@ export class CreateBatchDto {
     @IsNumber()
     @Min(1, { message: 'El ID del producto debe ser un número a partir de uno' })
     id_product: number;
-
-    @IsNumber()
-    @Min(1, { message: 'El ID de la unidad debe ser un número a partir de uno' })
-    id_unit: number;
 }

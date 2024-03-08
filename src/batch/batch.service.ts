@@ -24,8 +24,6 @@ export class BatchService {
           throw new HttpException('El tipo de línea referenciado no existe. Por favor, introduzca un tipo de línea que exista.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('id_product'))
           throw new HttpException('El producto referenciado no existe. Por favor, introduzca un producto que exista.', HttpStatus.BAD_REQUEST);
-        else if (error.detail.includes('id_unit'))
-          throw new HttpException('La unidad referenciada no existe. Por favor, introduzca una unidad que exista.', HttpStatus.BAD_REQUEST);
       }
       throw error;
     }
@@ -33,7 +31,7 @@ export class BatchService {
 
   async findAll() {
     return await this.batchRepository.find({
-      relations: ['line_type', 'product', 'unit']
+      relations: ['line_type', 'product']
     });
   }
 
@@ -58,8 +56,6 @@ export class BatchService {
           throw new HttpException('El tipo de línea referenciado no existe. Por favor, introduzca un tipo de línea que exista.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('id_product'))
           throw new HttpException('El producto referenciado no existe. Por favor, introduzca un producto que exista.', HttpStatus.BAD_REQUEST);
-        else if (error.detail.includes('id_unit'))
-          throw new HttpException('La unidad referenciada no existe. Por favor, introduzca una unidad que exista.', HttpStatus.BAD_REQUEST);
       }
       throw error;
     }
@@ -67,6 +63,12 @@ export class BatchService {
 
   async remove(id_batch: number) {
     const batch = await this.findOne(id_batch);
-    return await this.batchRepository.remove(batch);
+    try{
+      return await this.batchRepository.remove(batch);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('El lote seleccionado no puede ser eliminada porque es referenciado por una unidad.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }

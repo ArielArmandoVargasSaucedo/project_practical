@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -20,7 +20,7 @@ export class CompanyService {
         return await this.companyRepository.save(company);
       } catch (error) {
         if (error.code === '23505')
-          throw new HttpException('El nombre de la compañía ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('El nombre de la empresa ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
         throw error;
       }
     }
@@ -33,7 +33,7 @@ export class CompanyService {
     const company = await this.companyRepository.findOne({
       where: { id_company }});
     if (!company)
-      throw new HttpException('La compañía no existe. Por favor, introduzca una compañía diferente.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('La empresa no existe. Por favor, introduzca una empresa diferente.', HttpStatus.BAD_REQUEST);
     return company;
   }
 
@@ -44,13 +44,19 @@ export class CompanyService {
       return await this.companyRepository.save(company);
     } catch (error) {
       if (error.code === '23505')
-        throw new HttpException('El nombre de la compañía ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('El nombre de la empresa ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
       throw error;
     }
   }
 
   async remove(id_company: number) {
     const company = await this.findOne(id_company);
-    return await this.companyRepository.remove(company);
+    try{
+      return await this.companyRepository.remove(company);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('La empresa seleccionada no puede ser eliminada porque es referenciado por una UEB o por una familia de producto.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }

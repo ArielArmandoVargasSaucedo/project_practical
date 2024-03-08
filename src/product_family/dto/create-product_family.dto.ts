@@ -13,6 +13,6 @@ export class CreateProductFamilyDto {
     format: string;
 
     @IsNumber()
-    @Min(1, { message: 'El ID de la compañía debe ser un número a partir de uno' })
+    @Min(1, { message: 'El ID de la empresa debe ser un número a partir de uno' })
     id_company: number;
 }

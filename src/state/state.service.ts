@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateStateDto } from './dto/create-state.dto';
 import { UpdateStateDto } from './dto/update-state.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,9 +21,9 @@ export class StateService {
     } catch (error) {
       if (error.code === '23505') {
         if (error.detail.includes('name_state'))
-          throw new HttpException('El nombre del estado ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('El nombre del estado de producción ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('state_order'))
-          throw new HttpException('El número de orden del estado ya existe. Por favor, introduzca un número de orden diferente.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('El número de orden del estado de producción ya existe. Por favor, introduzca un número de orden diferente.', HttpStatus.BAD_REQUEST);
       }
       throw error;
     } 
@@ -37,7 +37,7 @@ export class StateService {
     const state = await this.stateRepository.findOne({
       where: { id_state }});
     if (!state)
-      throw new HttpException('El estado no existe. Por favor, introduzca un estado diferente.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('El estado producción no existe. Por favor, introduzca un estado de producción diferente.', HttpStatus.BAD_REQUEST);
     return state;
   }
 
@@ -49,9 +49,9 @@ export class StateService {
     } catch (error) {
       if (error.code === '23505') {
         if (error.detail.includes('name_state'))
-          throw new HttpException('El nombre del estado ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('El nombre del estado de producción ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
         else if (error.detail.includes('state_order'))
-          throw new HttpException('El número de orden del estado ya existe. Por favor, introduzca un número de orden diferente.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('El número de orden del estado de producción ya existe. Por favor, introduzca un número de orden diferente.', HttpStatus.BAD_REQUEST);
       }
       throw error;
     } 
@@ -60,6 +60,12 @@ export class StateService {
 
   async remove(id_state: number) {
     const state = await this.findOne(id_state);
-    return await this.stateRepository.remove(state);
+    try{
+      return await this.stateRepository.remove(state);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('El estado de producción seleccionado no puede ser eliminado porque es referenciado por una unidad.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }

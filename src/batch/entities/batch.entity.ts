@@ -1,7 +1,7 @@
 import { LineType } from "src/line_type/entities/line_type.entity";
 import { Product } from "src/product/entities/product.entity";
 import { Unit } from "src/unit/entities/unit.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'batch' })
 export class Batch {
@@ -25,10 +25,6 @@ export class Batch {
     @JoinColumn({ name: 'id_product'})
     product: Product;
 
-    @Column({ name: 'id_unit' })
-    id_unit: number;
-
-    @ManyToOne(() => Unit, (unit) => unit.batch)
-    @JoinColumn({ name: 'id_unit'})
+    @OneToMany(()  => Unit, (unit) => unit.batch)
     unit: Unit;
 }

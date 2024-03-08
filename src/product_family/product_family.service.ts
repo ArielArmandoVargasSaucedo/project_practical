@@ -18,9 +18,9 @@ export class ProductFamilyService {
       return await this.productFamilyRepository.save(product_family);
     } catch (error) {
       if (error.code === '23505')
-        throw new HttpException('El nombre de la familia producto ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('El nombre de la familia de producto ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
       else if(error.code === '23503')
-        throw new HttpException('La compañía referenciada no existe. Por favor, introduzca una compañía que exista.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('La empresa referenciada no existe. Por favor, introduzca una empresa que exista.', HttpStatus.BAD_REQUEST);
       throw error;
     }  
   }
@@ -35,7 +35,7 @@ export class ProductFamilyService {
     const product_family = await this.productFamilyRepository.findOne({
       where: { id_product_family }});
     if (!product_family)
-      throw new HttpException('La familia producto no existe. Por favor, introduzca una familia producto diferente.', HttpStatus.BAD_REQUEST);
+      throw new HttpException('La familia de producto no existe. Por favor, introduzca una familia de producto diferente.', HttpStatus.BAD_REQUEST);
     return product_family;
   }
 
@@ -46,15 +46,21 @@ export class ProductFamilyService {
       return await this.productFamilyRepository.save(product_family);
     } catch (error) {
       if (error.code === '23505')
-        throw new HttpException('El nombre de la familia producto ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('El nombre de la familia de producto ya existe. Por favor, introduzca un nombre diferente.', HttpStatus.BAD_REQUEST);
       else if(error.code === '23503')
-        throw new HttpException('La compañía referenciada no existe. Por favor, introduzca una compañía que exista.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('La empresa referenciada no existe. Por favor, introduzca una empresa que exista.', HttpStatus.BAD_REQUEST);
       throw error;
     } 
   }
 
   async remove(id_product_family: number) {
     const product_family = await this.findOne(id_product_family);
-    return await this.productFamilyRepository.remove(product_family);
+    try{
+      return await this.productFamilyRepository.remove(product_family);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('El producto de familia seleccionado no puede ser eliminado porque es referenciado por un producto.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }

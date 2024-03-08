@@ -1,7 +1,7 @@
 import { Batch } from "src/batch/entities/batch.entity";
 import { Destination } from "src/destination/entities/destination.entity";
 import { State } from "src/state/entities/state.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'unit' })
 export class Unit {
@@ -25,6 +25,11 @@ export class Unit {
     @JoinColumn({ name: 'id_destination'})
     destination: Destination;
 
-    @OneToMany(()  => Batch, (batch) => batch.unit)
+    
+    @Column({ name: 'id_batch' })
+    id_batch: number;
+
+    @ManyToOne(() => Batch, (batch) => batch.unit)
+    @JoinColumn({ name: 'id_batch'})
     batch: Batch;
 }

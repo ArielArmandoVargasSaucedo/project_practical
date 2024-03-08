@@ -21,7 +21,7 @@ export class LineTypeService {
       if (error.code === '23505')
         throw new HttpException('El código del tipo de línea ya existe. Por favor, introduzca un código diferente.', HttpStatus.BAD_REQUEST);
       else if(error.code === '23503')
-        throw new HttpException('La ueb referenciada no existe. Por favor, introduzca una ueb que exista.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('La UEB referenciada no existe. Por favor, introduzca una UEB que exista.', HttpStatus.BAD_REQUEST);
       throw error;
     }
   }
@@ -49,13 +49,19 @@ export class LineTypeService {
       if (error.code === '23505')
         throw new HttpException('El código del tipo de línea ya existe. Por favor, introduzca un código diferente.', HttpStatus.BAD_REQUEST);
       else if(error.code === '23503')
-        throw new HttpException('La ueb referenciada no existe. Por favor, introduzca una ueb que exista.', HttpStatus.BAD_REQUEST);
+        throw new HttpException('La UEB referenciada no existe. Por favor, introduzca una UEB que exista.', HttpStatus.BAD_REQUEST);
       throw error;
     }
   }
 
   async remove(id_line_type: number) {
     const line_type = await this.findOne(id_line_type);
-    return await this.lineTypeRepository.remove(line_type);
+    try{
+      return await this.lineTypeRepository.remove(line_type);
+    } catch (error) {
+      if (error.code === '23503')
+        throw new HttpException('El tipo de línea seleccionado no puede ser eliminado porque es referenciado por un lote.', HttpStatus.BAD_REQUEST);
+      throw error;
+    }
   }
 }
